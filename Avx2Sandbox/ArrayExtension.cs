@@ -74,7 +74,6 @@ namespace Avx2Sandbox
                         Avx2.Store(ptr + i, Avx2.Multiply(m, v));
                     }
                 }
-
             }
 
             for (; i < toExclusive; i++)
@@ -109,7 +108,6 @@ namespace Avx2Sandbox
                         Avx2.Store(ptr + i, Avx2.Subtract(zero, v));
                     }
                 }
-
             }
 
             for (; i < dataCount; i++)
