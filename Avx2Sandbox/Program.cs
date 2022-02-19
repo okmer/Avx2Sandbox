@@ -10,8 +10,8 @@ int cycleSize = 100;
 int[] dataSizes = new int[]{ 10, 100, 1000, 10000, 100000, 1000000, 2000000, 5000000, 10000000 };
 
 
-//ApplyInPlace/ApplyInPlaceAvx2
-Console.WriteLine("ApplyInPlace/ApplyInPlaceAvx2");
+//ApplyInPlace/ApplyInPlaceAvx2/ApplyInPlaceVec
+Console.WriteLine("ApplyInPlace/ApplyInPlaceAvx2/ApplyInPlaceVec");
 foreach (int dataSize in dataSizes)
 {
     var input = new float[dataSize];
@@ -53,14 +53,31 @@ foreach (int dataSize in dataSizes)
 
     Console.WriteLine($"Avx2 size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
 
-    Console.WriteLine($"Native and AvX2 are equal: {a.SequenceEqual(b)}");
+    sw.Reset();
+
+    var c = input.ToArray();
+    for (int i = 0; i < cycleSize; i++)
+    {
+        c = input.ToArray();
+
+        sw.Start();
+
+        c.ApplyInPlaceVec(0, dataSize, 1.111f);
+
+        sw.Stop();
+    }
+
+    Console.WriteLine($"Vector size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
+
+    Console.WriteLine($"Native and AvX2 are equal: {a.SequenceEqual(b)}, Native and Vector are equal: {a.SequenceEqual(c)}");
     
 }
 
+Console.Write("Press Enter...");
 Console.ReadLine();
 
-//InvertInPlace/InvertInPlaceAvx2
-Console.WriteLine("InvertInPlace/InvertInPlaceAvx2");
+//InvertInPlace/InvertInPlaceAvx2/InvertInPlaceVec
+Console.WriteLine("InvertInPlace/InvertInPlaceAvx2/InvertInPlaceVec");
 foreach (int dataSize in dataSizes)
 {
     var input = new int[dataSize];
@@ -102,10 +119,27 @@ foreach (int dataSize in dataSizes)
 
     Console.WriteLine($"Avx2 size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
 
+    sw.Reset();
+
+    var c = input.ToArray();
+    for (int i = 0; i < cycleSize; i++)
+    {
+        c = input.ToArray();
+
+        sw.Start();
+
+        c.InvertInPlaceVec();
+
+        sw.Stop();
+    }
+
+    Console.WriteLine($"Vector size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
+
     Console.WriteLine($"Native and AvX2 are equal: {a.SequenceEqual(b)}");
 
 }
 
+Console.Write("Press Enter...");
 Console.ReadLine();
 
 

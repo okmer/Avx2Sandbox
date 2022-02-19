@@ -5,6 +5,7 @@ using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 using System.Text;
 using System.Threading.Tasks;
+using System.Numerics;
 
 namespace Avx2Sandbox
 {
@@ -82,6 +83,26 @@ namespace Avx2Sandbox
             }
         }
 
+        internal static void ApplyInPlaceVec(this float[] input, int fromInclusive, int toExclusive, float multiplier)
+        {
+            int i = fromInclusive;
+
+            var m = new Vector<float>(multiplier);
+
+            var vectorCount = Vector<float>.Count;
+
+            for (; i < toExclusive - vectorCount; i += vectorCount)
+            {
+            var v = new Vector<float>(input, i);
+            (m * v).CopyTo(input, i);
+            }
+
+            for (; i < toExclusive; i++)
+            {
+                input[i] *= multiplier;
+            }
+        }
+
         internal static void InvertInPlace(this int[] data)
         {
             for (var i = 0; i < data.Length; i++)
@@ -108,6 +129,27 @@ namespace Avx2Sandbox
                         Avx2.Store(ptr + i, Avx2.Subtract(zero, v));
                     }
                 }
+            }
+
+            for (; i < dataCount; i++)
+            {
+                data[i] = -data[i];
+            }
+        }
+
+        internal static void InvertInPlaceVec(this int[] data)
+        {
+            var zero = Vector<int>.Zero;
+
+            int i = 0;
+            int dataCount = data.Length;
+
+            var vectorCount = Vector<int>.Count;
+
+            for (; i < dataCount - vectorCount; i += vectorCount)
+            {
+                var v = new Vector<int>(data, i);
+                (zero - v).CopyTo(data, i);
             }
 
             for (; i < dataCount; i++)
