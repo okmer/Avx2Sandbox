@@ -135,7 +135,7 @@ foreach (int dataSize in dataSizes)
 
     Console.WriteLine($"Vector size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
 
-    Console.WriteLine($"Native and AvX2 are equal: {a.SequenceEqual(b)}");
+    Console.WriteLine($"Native and AvX2 are equal: {a.SequenceEqual(b)}, Native and Vector are equal: {a.SequenceEqual(c)}");
 
 }
 
