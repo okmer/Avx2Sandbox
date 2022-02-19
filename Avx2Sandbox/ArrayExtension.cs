@@ -13,24 +13,24 @@ namespace Avx2Sandbox
     {
         internal static bool IsAvx2 = Avx2.IsSupported;
 
-        internal static void ApplyInPlace_(this float[] input, MultiplicationInfo[] multiplierInfos)
-        {
-            foreach (var multiplierInfo in multiplierInfos)
-            {
-                if (input.Length <= multiplierInfo.FromInclusive)
-                {
-                    continue;
-                }
+        //internal static void ApplyInPlace(this float[] input, MultiplicationInfo[] multiplierInfos)
+        //{
+        //    foreach (var multiplierInfo in multiplierInfos)
+        //    {
+        //        if (input.Length <= multiplierInfo.FromInclusive)
+        //        {
+        //            continue;
+        //        }
 
-                var fromInclusive = Math.Max(0, multiplierInfo.FromInclusive);
-                var toExclusive = Math.Min(input.Length, multiplierInfo.ToExclusive);
-                var multiplier = multiplierInfo.Multiplier;
-                for (var i = fromInclusive; i < toExclusive; i++)
-                {
-                    input[i] *= multiplier;
-                }
-            }
-        }
+        //        var fromInclusive = Math.Max(0, multiplierInfo.FromInclusive);
+        //        var toExclusive = Math.Min(input.Length, multiplierInfo.ToExclusive);
+        //        var multiplier = multiplierInfo.Multiplier;
+        //        for (var i = fromInclusive; i < toExclusive; i++)
+        //        {
+        //            input[i] *= multiplier;
+        //        }
+        //    }
+        //}
 
         internal static void ApplyInPlace(this float[] input, MultiplicationInfo[] multiplierInfos)
         {
@@ -63,6 +63,7 @@ namespace Avx2Sandbox
         internal static void ApplyInPlaceAvx2(this float[] input, int fromInclusive, int toExclusive, float multiplier)
         {
             int i = fromInclusive;
+
             unsafe
             {
                 Vector256<float> m = Vector256.Create(multiplier);
@@ -88,13 +89,11 @@ namespace Avx2Sandbox
             int i = fromInclusive;
 
             var m = new Vector<float>(multiplier);
-
             var vectorCount = Vector<float>.Count;
-
             for (; i < toExclusive - vectorCount; i += vectorCount)
             {
-            var v = new Vector<float>(input, i);
-            (m * v).CopyTo(input, i);
+                var v = new Vector<float>(input, i);
+                (m * v).CopyTo(input, i);
             }
 
             for (; i < toExclusive; i++)
@@ -113,16 +112,15 @@ namespace Avx2Sandbox
 
         internal static void InvertInPlaceAvx2(this int[] data)
         {
-            var zero = Vector256<int>.Zero;
-
             int i = 0;
+
+            var zero = Vector256<int>.Zero;
             int dataCount = data.Length;
             unsafe
             {
                 fixed (int* ptr = data)
                 {
                     var vectorCount = Vector256<int>.Count;
-
                     for (; i < dataCount - vectorCount; i += vectorCount)
                     {
                         Vector256<int> v = Avx2.LoadVector256(ptr + i);
@@ -139,13 +137,11 @@ namespace Avx2Sandbox
 
         internal static void InvertInPlaceVec(this int[] data)
         {
-            var zero = Vector<int>.Zero;
-
             int i = 0;
+
+            var zero = Vector<int>.Zero;
             int dataCount = data.Length;
-
             var vectorCount = Vector<int>.Count;
-
             for (; i < dataCount - vectorCount; i += vectorCount)
             {
                 var v = new Vector<int>(data, i);
