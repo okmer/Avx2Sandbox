@@ -140,8 +140,8 @@ foreach (int dataSize in dataSizes)
     Console.WriteLine($"Native and AvX2 are equal: {a.SequenceEqual(b)}, Native and Vector are equal: {a.SequenceEqual(c)}");
 }
 
-//RoundToInt32/RoundToInt32Avx2
-Console.WriteLine("RoundToInt32/RoundToInt32Avx2");
+//RoundToInt32/RoundToInt32Avx2/RoundToInt32Sse2
+Console.WriteLine("RoundToInt32/RoundToInt32Avx2/RoundToInt32Sse2");
 foreach (int dataSize in dataSizes)
 {
     var input = new float[dataSize];
