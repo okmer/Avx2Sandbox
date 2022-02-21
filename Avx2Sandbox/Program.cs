@@ -71,7 +71,7 @@ foreach (int dataSize in dataSizes)
 
     Console.WriteLine($"Vector {cycleSize}x ize[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
 
-    Console.WriteLine($"Native and AvX2 are equal: {a.SequenceEqual(b)}, Native and Vector are equal: {a.SequenceEqual(c)}");
+    Console.WriteLine($"Native and Avx2 are equal: {a.SequenceEqual(b)}, Native and Vector are equal: {a.SequenceEqual(c)}");
     
 }
 
@@ -137,7 +137,7 @@ foreach (int dataSize in dataSizes)
 
     Console.WriteLine($"Vector {cycleSize}x size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
 
-    Console.WriteLine($"Native and AvX2 are equal: {a.SequenceEqual(b)}, Native and Vector are equal: {a.SequenceEqual(c)}");
+    Console.WriteLine($"Native and Avx2 are equal: {a.SequenceEqual(b)}, Native and Vector are equal: {a.SequenceEqual(c)}");
 }
 
 //RoundToInt32/RoundToInt32Avx2/RoundToInt32Sse2
@@ -176,12 +176,14 @@ foreach (int dataSize in dataSizes)
 
         sw.Start();
 
-        b = d.RoundToInt32Avx2();
+        b = d.RoundToInt32Sse2();
 
         sw.Stop();
     }
 
-    Console.WriteLine($"Avx2 {cycleSize}x size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
+    Console.WriteLine($"Sse2 {cycleSize}x size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
+
+    sw.Reset();
 
     int[] c = Array.Empty<int>();
     for (int i = 0; i < cycleSize; i++)
@@ -190,14 +192,14 @@ foreach (int dataSize in dataSizes)
 
         sw.Start();
 
-        c = d.RoundToInt32Sse2();
+        c = d.RoundToInt32Avx2();
 
         sw.Stop();
     }
 
-    Console.WriteLine($"Sse2 {cycleSize}x size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
+    Console.WriteLine($"Avx2 {cycleSize}x size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
 
-    Console.WriteLine($"Native and AvX2 are equal: {a.SequenceEqual(b)}, Native and Sse2 are equal: {a.SequenceEqual(c)}");
+    Console.WriteLine($"Native and Sse2 are equal: {a.SequenceEqual(b)}, Native and Avx2 are equal: {a.SequenceEqual(c)}");
 }
 
 Console.Write("Press Enter...");
