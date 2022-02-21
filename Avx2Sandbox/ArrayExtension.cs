@@ -188,6 +188,36 @@ namespace Avx2Sandbox
 
             return output;
         }
+        
+        internal static int[] RoundToInt32Sse2(this float[] input)
+        {
+            int i = 0;
+
+            int inputCount = input.Length;
+            var output = new int[inputCount];
+            unsafe
+            {
+                fixed (float* ptrIn = input)
+                {
+                    fixed (int* ptrOut = output)
+                    {
+                        var vectorCount = Vector128<float>.Count;
+                        for (; i < inputCount - vectorCount; i += vectorCount)
+                        {
+                            Vector128<float> v = Sse2.LoadVector128(ptrIn + i);
+                            Sse2.Store(ptrOut + i, Sse2.ConvertToVector128Int32(v));
+                        }
+                    }
+                }
+            }
+
+            for (; i < inputCount; i++)
+            {
+                output[i] = (int)Math.Round(input[i]);
+            }
+
+            return output;
+        }
     }
 
     internal struct MultiplicationInfo

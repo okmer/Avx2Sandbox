@@ -9,10 +9,8 @@ Console.WriteLine("Hello, AVX2!");
 Console.WriteLine($"Supported SSE {Sse.IsSupported}, SSE2 {Sse2.IsSupported}, SSE3, {Sse3.IsSupported}, SSE41 {Sse41.IsSupported}, SSE42 {Sse42.IsSupported}, SSSE3 {Ssse3.IsSupported}");
 Console.WriteLine($"Supported AVX {Avx.IsSupported}, AVX2 {Avx2.IsSupported}, BMI1 {Bmi1.IsSupported}, BMI2 {Bmi2.IsSupported}, FMA {Fma.IsSupported}");
 
-
 int cycleSize = 100;
 int[] dataSizes = new int[]{ 10, 100, 1000, 10000, 100000, 1000000, 2000000, 5000000, 10000000 };
-
 
 //ApplyInPlace/ApplyInPlaceAvx2/ApplyInPlaceVec
 Console.WriteLine("ApplyInPlace/ApplyInPlaceAvx2/ApplyInPlaceVec");
@@ -185,7 +183,21 @@ foreach (int dataSize in dataSizes)
 
     Console.WriteLine($"Avx2 {cycleSize}x size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
 
-    Console.WriteLine($"Native and AvX2 are equal: {a.SequenceEqual(b)}");
+    int[] c = Array.Empty<int>();
+    for (int i = 0; i < cycleSize; i++)
+    {
+        var d = input.ToArray();
+
+        sw.Start();
+
+        c = d.RoundToInt32Avx2();
+
+        sw.Stop();
+    }
+
+    Console.WriteLine($"Sse2 {cycleSize}x size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
+
+    Console.WriteLine($"Native and AvX2 are equal: {a.SequenceEqual(b)}, Native and Sse2 are equal: {a.SequenceEqual(c)}");
 }
 
 Console.Write("Press Enter...");
