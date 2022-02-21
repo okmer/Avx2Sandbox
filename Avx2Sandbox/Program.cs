@@ -1,8 +1,14 @@
 ﻿using Avx2Sandbox;
 using System.Diagnostics;
+using System.Runtime.Intrinsics.X86;
 
 // See https://aka.ms/new-console-template for more information
 Console.WriteLine("Hello, AVX2!");
+
+//Overview
+Console.WriteLine($"Supported SSE {Sse.IsSupported}, SSE2 {Sse2.IsSupported}, SSE3, {Sse3.IsSupported}, SSE41 {Sse41.IsSupported}, SSE42 {Sse42.IsSupported}, SSSE3 {Ssse3.IsSupported}");
+Console.WriteLine($"Supported AVX {Avx.IsSupported}, AVX2 {Avx2.IsSupported}, BMI1 {Bmi1.IsSupported}, BMI2 {Bmi2.IsSupported}, FMA {Fma.IsSupported}");
+
 
 int cycleSize = 100;
 int[] dataSizes = new int[]{ 10, 100, 1000, 10000, 100000, 1000000, 2000000, 5000000, 10000000 };
