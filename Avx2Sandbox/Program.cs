@@ -190,7 +190,7 @@ foreach (int dataSize in dataSizes)
 
         sw.Start();
 
-        c = d.RoundToInt32Avx2();
+        c = d.RoundToInt32Sse2();
 
         sw.Stop();
     }
