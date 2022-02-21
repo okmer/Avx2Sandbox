@@ -148,6 +148,46 @@ namespace Avx2Sandbox
                 data[i] = -data[i];
             }
         }
+
+        internal static int[] RoundToInt32(this float[] input)
+        {
+            var output = new int[input.Length];
+            for (int i=0; i < input.Length; i++)
+            {
+                output[i] = (int)Math.Round(input[i]);
+            }
+            return output;
+        }
+
+        internal static int[] RoundToInt32Avx2(this float[] input)
+        {
+            int i = 0;
+
+            int inputCount = input.Length;
+            var output = new int[inputCount];
+            unsafe
+            {
+                fixed (float* ptrIn = input)
+                {
+                    fixed (int* ptrOut = output)
+                    {
+                        var vectorCount = Vector256<float>.Count;
+                        for (; i < inputCount - vectorCount; i += vectorCount)
+                        {
+                            Vector256<float> v = Avx2.LoadVector256(ptrIn + i);
+                            Avx2.Store(ptrOut + i, Avx2.ConvertToVector256Int32(v));
+                        }
+                    }
+                }
+            }
+
+            for (; i < inputCount; i++)
+            {
+                output[i] = (int)Math.Round(input[i]);
+            }
+
+            return output;
+        }
     }
 
     internal struct MultiplicationInfo

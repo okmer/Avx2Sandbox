@@ -33,7 +33,7 @@ foreach (int dataSize in dataSizes)
         sw.Stop();
     }
 
-    Console.WriteLine($"Native size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
+    Console.WriteLine($"Native {cycleSize}x size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
 
     sw.Reset();
 
@@ -49,7 +49,7 @@ foreach (int dataSize in dataSizes)
         sw.Stop();
     }
 
-    Console.WriteLine($"Avx2 size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
+    Console.WriteLine($"Avx2 {cycleSize}x size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
 
     sw.Reset();
 
@@ -65,7 +65,7 @@ foreach (int dataSize in dataSizes)
         sw.Stop();
     }
 
-    Console.WriteLine($"Vector size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
+    Console.WriteLine($"Vector {cycleSize}x ize[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
 
     Console.WriteLine($"Native and AvX2 are equal: {a.SequenceEqual(b)}, Native and Vector are equal: {a.SequenceEqual(c)}");
     
@@ -99,7 +99,7 @@ foreach (int dataSize in dataSizes)
         sw.Stop();
     }
 
-    Console.WriteLine($"Native size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
+    Console.WriteLine($"Native {cycleSize}x size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
 
     sw.Reset();
 
@@ -115,7 +115,7 @@ foreach (int dataSize in dataSizes)
         sw.Stop();
     }
 
-    Console.WriteLine($"Avx2 size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
+    Console.WriteLine($"Avx2 {cycleSize}x size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
 
     sw.Reset();
 
@@ -131,10 +131,55 @@ foreach (int dataSize in dataSizes)
         sw.Stop();
     }
 
-    Console.WriteLine($"Vector size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
+    Console.WriteLine($"Vector {cycleSize}x size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
 
     Console.WriteLine($"Native and AvX2 are equal: {a.SequenceEqual(b)}, Native and Vector are equal: {a.SequenceEqual(c)}");
+}
 
+//RoundToInt32/RoundToInt32Avx2
+Console.WriteLine("RoundToInt32/RoundToInt32Avx2");
+foreach (int dataSize in dataSizes)
+{
+    var input = new float[dataSize];
+
+    for (int i = 0; i < dataSize; i++)
+    {
+        input[i] = Random.Shared.NextSingle();
+    }
+
+    var sw = new Stopwatch();
+
+    var a = Array.Empty<int>();
+    for (int i = 0; i < cycleSize; i++)
+    {
+        var d = input.ToArray();
+
+        sw.Start();
+
+        a = d.RoundToInt32();
+
+        sw.Stop();
+    }
+
+    Console.WriteLine($"Native {cycleSize}x size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
+
+    sw.Reset();
+
+    int[] b = Array.Empty<int>();
+    for (int i = 0; i < cycleSize; i++)
+    {
+        var d = input.ToArray();
+
+        sw.Start();
+
+        b = d.RoundToInt32Avx2();
+
+        sw.Stop();
+    }
+
+    Console.WriteLine($"Avx2 {cycleSize}x size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
+
+    Console.WriteLine($"Native and AvX2 are equal: {a.SequenceEqual(b)}");
 }
 
 Console.Write("Press Enter...");
