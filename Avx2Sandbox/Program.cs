@@ -12,8 +12,8 @@ Console.WriteLine($"Supported AVX {Avx.IsSupported}, AVX2 {Avx2.IsSupported}, BM
 int cycleSize = 100;
 int[] dataSizes = new int[]{ 10, 100, 1000, 10000, 100000, 1000000, 2000000, 5000000, 10000000 };
 
-//ApplyInPlace/ApplyInPlaceAvx2/ApplyInPlaceVec
-Console.WriteLine("ApplyInPlace/ApplyInPlaceAvx2/ApplyInPlaceVec");
+//MultiplyInPlace
+Console.WriteLine("MultiplyInPlace: Native/AVX/Vector");
 foreach (int dataSize in dataSizes)
 {
     var input = new float[dataSize];
@@ -32,7 +32,7 @@ foreach (int dataSize in dataSizes)
 
         sw.Start();
 
-        a.ApplyInPlace(0, dataSize, 1.111f);
+        a.MultiplyInPlace(0, dataSize, 1.111f);
 
         sw.Stop();
     }
@@ -48,12 +48,12 @@ foreach (int dataSize in dataSizes)
 
         sw.Start();
 
-        b.ApplyInPlaceAvx2(0, dataSize, 1.111f);
+        b.MultiplyInPlaceAvx(0, dataSize, 1.111f);
 
         sw.Stop();
     }
 
-    Console.WriteLine($"Avx2 {cycleSize}x size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
+    Console.WriteLine($"AVX {cycleSize}x size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
 
     sw.Reset();
 
@@ -64,22 +64,22 @@ foreach (int dataSize in dataSizes)
 
         sw.Start();
 
-        c.ApplyInPlaceVec(0, dataSize, 1.111f);
+        c.MultiplyInPlaceVec(0, dataSize, 1.111f);
 
         sw.Stop();
     }
 
     Console.WriteLine($"Vector {cycleSize}x ize[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
 
-    Console.WriteLine($"Native and Avx2 are equal: {a.SequenceEqual(b)}, Native and Vector are equal: {a.SequenceEqual(c)}");
+    Console.WriteLine($"Native and AVX sequences are equal: {a.SequenceEqual(b)}, Native and Vector sequences are equal: {a.SequenceEqual(c)}");
     
 }
 
 Console.Write("Press Enter...");
 Console.ReadLine();
 
-//InvertInPlace/InvertInPlaceAvx2/InvertInPlaceVec
-Console.WriteLine("InvertInPlace/InvertInPlaceAvx2/InvertInPlaceVec");
+//InvertInPlace
+Console.WriteLine("InvertInPlace Native/AVX2/Vector");
 foreach (int dataSize in dataSizes)
 {
     var input = new int[dataSize];
@@ -119,7 +119,7 @@ foreach (int dataSize in dataSizes)
         sw.Stop();
     }
 
-    Console.WriteLine($"Avx2 {cycleSize}x size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
+    Console.WriteLine($"AVX2 {cycleSize}x size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
 
     sw.Reset();
 
@@ -137,14 +137,14 @@ foreach (int dataSize in dataSizes)
 
     Console.WriteLine($"Vector {cycleSize}x size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
 
-    Console.WriteLine($"Native and Avx2 are equal: {a.SequenceEqual(b)}, Native and Vector are equal: {a.SequenceEqual(c)}");
+    Console.WriteLine($"Native and AVX2 sequences are equal: {a.SequenceEqual(b)}, Native and Vector sequences are equal: {a.SequenceEqual(c)}");
 }
 
 Console.Write("Press Enter...");
 Console.ReadLine();
 
-//RoundToInt32/RoundToInt32Avx2/RoundToInt32Sse2
-Console.WriteLine("RoundToInt32/RoundToInt32Avx2/RoundToInt32Sse2");
+//RoundAndConvertToInt32
+Console.WriteLine("RoundAndConvertToInt32: Native/AVX/SSE2");
 foreach (int dataSize in dataSizes)
 {
     var input = new float[dataSize];
@@ -163,7 +163,7 @@ foreach (int dataSize in dataSizes)
 
         sw.Start();
 
-        a = d.RoundToInt32();
+        a = d.RoundAndConvertToInt32();
 
         sw.Stop();
     }
@@ -179,12 +179,12 @@ foreach (int dataSize in dataSizes)
 
         sw.Start();
 
-        b = d.RoundToInt32Sse2();
+        b = d.RoundAndConvertToInt32Sse2();
 
         sw.Stop();
     }
 
-    Console.WriteLine($"Sse2 {cycleSize}x size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
+    Console.WriteLine($"SSE2 {cycleSize}x size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
 
     sw.Reset();
 
@@ -195,14 +195,14 @@ foreach (int dataSize in dataSizes)
 
         sw.Start();
 
-        c = d.RoundToInt32Avx2();
+        c = d.RoundAndConvertToInt32Avx();
 
         sw.Stop();
     }
 
-    Console.WriteLine($"Avx2 {cycleSize}x size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
+    Console.WriteLine($"AVX {cycleSize}x size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
 
-    Console.WriteLine($"Native and Sse2 are equal: {a.SequenceEqual(b)}, Native and Avx2 are equal: {a.SequenceEqual(c)}");
+    Console.WriteLine($"Native and SSE2 sequences are equal: {a.SequenceEqual(b)}, Native and AVX2 sequences are equal: {a.SequenceEqual(c)}");
 }
 
 Console.Write("Press Enter...");

@@ -8,46 +8,7 @@ namespace Avx2Sandbox
     {
         internal static bool IsAvx2 = Avx2.IsSupported;
 
-        //internal static void ApplyInPlace(this float[] input, MultiplicationInfo[] multiplierInfos)
-        //{
-        //    foreach (var multiplierInfo in multiplierInfos)
-        //    {
-        //        if (input.Length <= multiplierInfo.FromInclusive)
-        //        {
-        //            continue;
-        //        }
-
-        //        var fromInclusive = Math.Max(0, multiplierInfo.FromInclusive);
-        //        var toExclusive = Math.Min(input.Length, multiplierInfo.ToExclusive);
-        //        var multiplier = multiplierInfo.Multiplier;
-        //        for (var i = fromInclusive; i < toExclusive; i++)
-        //        {
-        //            input[i] *= multiplier;
-        //        }
-        //    }
-        //}
-
-        internal static void ApplyInPlace(this float[] input, MultiplicationInfo[] multiplierInfos)
-        {
-            foreach (var multiplierInfo in multiplierInfos)
-            {
-                if (input.Length <= multiplierInfo.FromInclusive)
-                {
-                    continue;
-                }
-
-                var fromInclusive = Math.Max(0, multiplierInfo.FromInclusive);
-                var toExclusive = Math.Min(input.Length, multiplierInfo.ToExclusive);
-                var multiplier = multiplierInfo.Multiplier;
-
-                if (IsAvx2)
-                    input.ApplyInPlaceAvx2(fromInclusive, toExclusive, multiplier);
-                else
-                    input.ApplyInPlace(fromInclusive, toExclusive, multiplier);
-            }
-        }
-
-        internal static void ApplyInPlace(this float[] input, int fromInclusive, int toExclusive, float multiplier)
+        internal static void MultiplyInPlace(this float[] input, int fromInclusive, int toExclusive, float multiplier)
         {
             for (var i = fromInclusive; i < toExclusive; i++)
             {
@@ -55,7 +16,7 @@ namespace Avx2Sandbox
             }
         }
 
-        internal static void ApplyInPlaceAvx2(this float[] input, int fromInclusive, int toExclusive, float multiplier)
+        internal static void MultiplyInPlaceAvx(this float[] input, int fromInclusive, int toExclusive, float multiplier)
         {
             int i = fromInclusive;
 
@@ -67,8 +28,8 @@ namespace Avx2Sandbox
                     var vectorCount = Vector256<float>.Count;
                     for (; i < toExclusive - vectorCount; i += vectorCount)
                     {
-                        Vector256<float> v = Avx2.LoadVector256(ptr + i);
-                        Avx2.Store(ptr + i, Avx2.Multiply(m, v));
+                        Vector256<float> v = Avx.LoadVector256(ptr + i);
+                        Avx.Store(ptr + i, Avx.Multiply(m, v));
                     }
                 }
             }
@@ -79,7 +40,7 @@ namespace Avx2Sandbox
             }
         }
 
-        internal static void ApplyInPlaceVec(this float[] input, int fromInclusive, int toExclusive, float multiplier)
+        internal static void MultiplyInPlaceVec(this float[] input, int fromInclusive, int toExclusive, float multiplier)
         {
             int i = fromInclusive;
 
@@ -149,7 +110,7 @@ namespace Avx2Sandbox
             }
         }
 
-        internal static int[] RoundToInt32(this float[] input)
+        internal static int[] RoundAndConvertToInt32(this float[] input)
         {
             var output = new int[input.Length];
             for (int i=0; i < input.Length; i++)
@@ -159,7 +120,7 @@ namespace Avx2Sandbox
             return output;
         }
 
-        internal static int[] RoundToInt32Avx2(this float[] input)
+        internal static int[] RoundAndConvertToInt32Avx(this float[] input)
         {
             int i = 0;
 
@@ -174,8 +135,8 @@ namespace Avx2Sandbox
                         var vectorCount = Vector256<float>.Count;
                         for (; i < inputCount - vectorCount; i += vectorCount)
                         {
-                            Vector256<float> v = Avx2.LoadVector256(ptrIn + i);
-                            Avx2.Store(ptrOut + i, Avx2.ConvertToVector256Int32(v));
+                            Vector256<float> v = Avx.LoadVector256(ptrIn + i);
+                            Avx.Store(ptrOut + i, Avx.ConvertToVector256Int32(v));
                         }
                     }
                 }
@@ -189,7 +150,7 @@ namespace Avx2Sandbox
             return output;
         }
         
-        internal static int[] RoundToInt32Sse2(this float[] input)
+        internal static int[] RoundAndConvertToInt32Sse2(this float[] input)
         {
             int i = 0;
 
