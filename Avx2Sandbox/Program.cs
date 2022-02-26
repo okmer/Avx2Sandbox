@@ -202,7 +202,7 @@ foreach (int dataSize in dataSizes)
 
     Console.WriteLine($"AVX {cycleSize}x size[{dataSize}] {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} mS");
 
-    Console.WriteLine($"Native and SSE2 sequences are equal: {a.SequenceEqual(b)}, Native and AVX2 sequences are equal: {a.SequenceEqual(c)}");
+    Console.WriteLine($"Native and SSE2 sequences are equal: {a.SequenceEqual(b)}, Native and AVX sequences are equal: {a.SequenceEqual(c)}");
 }
 
 Console.Write("Press Enter...");
